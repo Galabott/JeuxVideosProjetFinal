@@ -1,0 +1,38 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://RPG Nature Tileset.png" type="Texture" id=1]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 14.5, 3.375 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 16, 14 )
+
+[node name="tree" type="Node2D"]
+
+[node name="Sprite" type="Sprite" parent="."]
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 1 )
+hframes = 20
+vframes = 9
+
+[node name="treetop" type="StaticBody2D" parent="Sprite"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sprite/treetop"]
+position = Vector2( 0, 13.375 )
+shape = SubResource( 1 )
+
+[node name="Sprite5" type="Sprite" parent="."]
+position = Vector2( 0, 16 )
+scale = Vector2( 0.5, 0.5 )
+texture = ExtResource( 1 )
+hframes = 20
+vframes = 9
+frame = 20
+
+[node name="treestump" type="StaticBody2D" parent="Sprite5"]
+position = Vector2( 0, 16 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sprite5/treestump"]
+position = Vector2( 0, -18 )
+shape = SubResource( 2 )
