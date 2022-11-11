@@ -11,7 +11,10 @@ public class Player : KinematicBody2D
 	
 	float MAX_SPEED = 150;
 	
+	bool dead = false;
 	
+	private int health = 100;
+
 	int bruh = 1;
 	
 	const int FRICTION = 90;
@@ -20,10 +23,30 @@ public class Player : KinematicBody2D
 	
 	bool isAttacking = false;
 
+	System.Random random = new System.Random(); 
+
+	Timer timer = new Timer();
+
+	Boolean invincible = false;
+
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		
+		timer.OneShot = true; 
+		timer.WaitTime = 3; 
+		timer.Connect("timeout", this, "on_timeout_complete");
+		AddChild(timer);
+
+		var attackarea = (Area2D)GetNode("AttackArea");
+		var attackcollision = (CollisionShape2D)attackarea.GetChild(0);
+
+		attackcollision.Disabled = true;
+	}
+
+	private void on_timeout_complete(){
+		invincible = false;
+		GD.Print("TIMEOUT INVINCIBLE");
 	}
 
 	public Vector2 GetInput()	{
@@ -46,6 +69,12 @@ public class Player : KinematicBody2D
   		var input_vector = GetInput();
 		
 		var currentSprite = (AnimatedSprite)GetNode("AnimatedSprite");
+
+		var attackarea = (Area2D)GetNode("AttackArea");
+		var attackcollision = (CollisionShape2D)attackarea.GetChild(0);
+
+		GlobalVariables.PlayerPosition = this.GlobalPosition;
+
 		
 		if(input_vector != Vector2.Zero) {
 			Velocity += input_vector * ACCELERATION;
@@ -54,9 +83,8 @@ public class Player : KinematicBody2D
 			Velocity = Vector2.Zero;
 		}
 		
-		
-		
-		if (Input.IsActionPressed("ui_right") && isAttacking == false) {
+		if(dead == false){
+			if (Input.IsActionPressed("ui_right") && isAttacking == false) {
 			currentSprite.FlipH = false;
 			currentSprite.Play("walk");
 			bruh = 1;
@@ -87,37 +115,84 @@ public class Player : KinematicBody2D
 			bruh = 6;
 			isAttacking = true;
 		}
+		else if(Input.IsActionPressed("ui_DIE!")){
+			_setHealth(1);
+		}
 		else if(isAttacking){
 			if(bruh == 5){
 				currentSprite.Play("attack1");
+				attackcollision.Disabled = false;
 			}
 			else{
 				currentSprite.Play("attack2");
+				attackcollision.Disabled = false;
 			}
 		}
 //		
-		else{
-			currentSprite.Play("idle");
+			else{
+				currentSprite.Play("idle");
+			}
+			if(isAttacking == false){
+				Velocity = Velocity.MoveToward(Vector2.Zero, FRICTION);
+				Velocity = Velocity.Clamped(MAX_SPEED);
+				MoveAndSlide(Velocity);
+			}
+			
+			if(health <= 0){
+				currentSprite.Play("die");
+				//dead = true;
+			}
 		}
+		
 		
 		//moveandcollide + delta
 		//moveandslide - no delta
 		
-		if(isAttacking == false){
-			Velocity = Velocity.MoveToward(Vector2.Zero, FRICTION);
-			Velocity = Velocity.Clamped(MAX_SPEED);
-			MoveAndSlide(Velocity);
-		}
+		
   }
 
 	private void _on_AnimatedSprite_animation_finished()
 	{
 		var currentSprite = (AnimatedSprite)GetNode("AnimatedSprite");
+		var attackarea = (Area2D)GetNode("AttackArea");
+		var attackcollision = (CollisionShape2D)attackarea.GetChild(0);
+
 		if(currentSprite.Animation == "attack1" || currentSprite.Animation == "attack2"){
 			isAttacking = false;
+			attackcollision.Disabled = true;
+		}
+		if(currentSprite.Animation == "die"){
+			GetTree().ChangeScene("res://EndMenu.tscn");
 		}
 	}
+
+	private void _setHealth(int dmg){
+		health -= dmg;
+		GetTree().CallGroup("Health","ChangeHealth", health);
+	}
+
+		private void _on_HitBox_area_entered(Area2D area)
+	{
+		var currentSprite = (AnimatedSprite)GetNode("AnimatedSprite");
+				if(area.IsInGroup("EnemyAttack") && invincible == false){
+					
+					invincible = true;
+					timer.Start();
+
+					
+					GD.Print("DMG");
+
+					int dmg = random.Next(60, 99);
+					_setHealth(dmg);
+					
+					GD.Print("HEALTH " + health);
+					if(health <= 0){
+						dead = true;
+						currentSprite.Play("die");
+						GetTree().CallGroup("Health","ChangeHealth", 0);
+					}
+
+				}
+			}
+	
 }
-
-
-
