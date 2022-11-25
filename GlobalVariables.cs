@@ -14,7 +14,6 @@ public static class GlobalVariables
 	public static bool Paused = false;
 	public static bool Muted = true;
 
-
 	public static void Reset(){
 		PlayerPosition = Vector2.Zero;
 	
