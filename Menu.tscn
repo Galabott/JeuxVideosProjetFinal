@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Menu.cs" type="Script" id=1]
 [ext_resource path="res://pixil-frame-0.png" type="Texture" id=2]
+[ext_resource path="res://GameMusic/mainmenu2.wav" type="AudioStream" id=3]
 
 [node name="Menu" type="Control"]
 anchor_right = 1.0
@@ -42,5 +43,31 @@ margin_right = 63.0
 margin_bottom = 68.0
 text = "Quit"
 
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 3 )
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="."]
+visible = false
+margin_left = 78.0
+margin_top = 94.0
+margin_right = 222.0
+margin_bottom = 233.0
+
+[node name="Label" type="Label" parent="VBoxContainer2"]
+margin_right = 144.0
+margin_bottom = 65.0
+text = "WASD for movement
+F/G to attack
+R for magic
+ESC for pause menu"
+
+[node name="Button" type="Button" parent="VBoxContainer2"]
+margin_top = 69.0
+margin_right = 144.0
+margin_bottom = 89.0
+text = "Toggle Mute"
+
 [connection signal="pressed" from="CanvasLayer/VBoxContainer/Start" to="." method="_on_Start_pressed"]
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/Options" to="." method="_on_Options_pressed"]
 [connection signal="pressed" from="CanvasLayer/VBoxContainer/Quit" to="." method="_on_Quit_pressed"]
+[connection signal="pressed" from="VBoxContainer2/Button" to="." method="_on_Button_pressed"]

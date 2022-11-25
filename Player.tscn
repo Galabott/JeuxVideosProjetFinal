@@ -1,12 +1,26 @@
-[gd_scene load_steps=57 format=2]
+[gd_scene load_steps=63 format=2]
 
 [ext_resource path="res://Player.cs" type="Script" id=1]
 [ext_resource path="res://Sprites/Staff Nomad/Staff Nomad/STAFF/Nomad3_HD_NoBg.png" type="Texture" id=2]
 [ext_resource path="res://HUD.tscn" type="PackedScene" id=3]
+[ext_resource path="res://PinkPlayer.gdshader" type="Shader" id=4]
+[ext_resource path="res://PauseMenu.cs" type="Script" id=5]
+[ext_resource path="res://GameMusic/hitsound.wav" type="AudioStream" id=6]
+
+[sub_resource type="Shader" id=58]
+
+[sub_resource type="ShaderMaterial" id=59]
+shader = SubResource( 58 )
 
 [sub_resource type="CapsuleShape2D" id=46]
 radius = 14.0
 height = 32.0
+
+[sub_resource type="ShaderMaterial" id=61]
+resource_local_to_scene = true
+shader = ExtResource( 4 )
+shader_param/flash_color = Color( 1, 0, 0.0235294, 0.411765 )
+shader_param/flash_modifier = 0.0
 
 [sub_resource type="AtlasTexture" id=23]
 flags = 4
@@ -288,8 +302,9 @@ extents = Vector2( 46.5, 38 )
 extents = Vector2( 18, 33.5 )
 
 [node name="Player" type="Node2D"]
+material = SubResource( 59 )
 
-[node name="Player" type="KinematicBody2D" parent="."]
+[node name="Player" type="KinematicBody2D" parent="." groups=["Player"]]
 script = ExtResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
@@ -301,6 +316,7 @@ position = Vector2( 1, 1 )
 current = true
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="Player"]
+material = SubResource( 61 )
 position = Vector2( 0, -25 )
 scale = Vector2( 0.313465, 0.398089 )
 frames = SubResource( 47 )
@@ -322,5 +338,43 @@ position = Vector2( 1, 0 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player/HitBox"]
 shape = SubResource( 57 )
 
+[node name="PauseMenu" type="CanvasLayer" parent="Player"]
+script = ExtResource( 5 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Player/PauseMenu"]
+margin_left = 85.0
+margin_right = 215.0
+margin_bottom = 238.0
+alignment = 1
+
+[node name="Menu" type="Button" parent="Player/PauseMenu/VBoxContainer"]
+margin_top = 85.0
+margin_right = 130.0
+margin_bottom = 105.0
+text = "MENU"
+
+[node name="Restart" type="Button" parent="Player/PauseMenu/VBoxContainer"]
+margin_top = 109.0
+margin_right = 130.0
+margin_bottom = 129.0
+text = "RESTART"
+
+[node name="Quit" type="Button" parent="Player/PauseMenu/VBoxContainer"]
+margin_top = 133.0
+margin_right = 130.0
+margin_bottom = 153.0
+text = "QUIT"
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="Player"]
+stream = ExtResource( 6 )
+volume_db = -10.0
+
+[node name="AudioStreamPlayer2D2" type="AudioStreamPlayer2D" parent="Player"]
+stream = ExtResource( 6 )
+pitch_scale = 5.0
+
 [connection signal="animation_finished" from="Player/AnimatedSprite" to="Player" method="_on_AnimatedSprite_animation_finished"]
 [connection signal="area_entered" from="Player/HitBox" to="Player" method="_on_HitBox_area_entered"]
+[connection signal="pressed" from="Player/PauseMenu/VBoxContainer/Menu" to="Player/PauseMenu" method="_on_Menu_pressed"]
+[connection signal="pressed" from="Player/PauseMenu/VBoxContainer/Restart" to="Player/PauseMenu" method="_on_Restart_pressed"]
+[connection signal="pressed" from="Player/PauseMenu/VBoxContainer/Quit" to="Player/PauseMenu" method="_on_Quit_pressed"]

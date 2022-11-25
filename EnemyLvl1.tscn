@@ -1,7 +1,8 @@
-[gd_scene load_steps=43 format=2]
+[gd_scene load_steps=44 format=2]
 
 [ext_resource path="res://Enemy.cs" type="Script" id=1]
 [ext_resource path="res://Sprites/Ninja_Free(FIXED)/Ninja_Free(FIXED)/Ninja HD Sample.png" type="Texture" id=2]
+[ext_resource path="res://GameMusic/hitsound.wav" type="AudioStream" id=3]
 
 [sub_resource type="AtlasTexture" id=76]
 flags = 4
@@ -250,6 +251,10 @@ shape = SubResource( 115 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy/DetectionRange"]
 shape = SubResource( 116 )
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="Enemy"]
+stream = ExtResource( 3 )
+pitch_scale = 1.5
 
 [connection signal="animation_finished" from="Enemy/AnimatedSprite" to="Enemy" method="_on_AnimatedSprite_animation_finished"]
 [connection signal="area_entered" from="Enemy/Area2D" to="Enemy" method="_on_Area2D_area_entered"]

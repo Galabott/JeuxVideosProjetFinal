@@ -10,6 +10,9 @@ public static class GlobalVariables
 	public static int WaveCount = 1;
 
 	public static int EnemiesPerWaves = 5;
+	
+	public static bool Paused = false;
+	public static bool Muted = true;
 
 
 	public static void Reset(){

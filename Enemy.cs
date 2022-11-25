@@ -6,7 +6,8 @@ public class Enemy : KinematicBody2D
 	// Declare member variables here. Examples:
 	// private int a = 2;
 	// private string b = "text";
-	
+	System.Random random = new System.Random(); 
+
 	Vector2 Velocity = Vector2.Zero;
 	
 	float MAX_SPEED = 100;
@@ -23,9 +24,14 @@ public class Enemy : KinematicBody2D
 	
 	bool isAttacking = false;
 
+	PackedScene healthKit;
+	AudioStreamPlayer2D hitsound;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		hitsound = (AudioStreamPlayer2D)GetNode("AudioStreamPlayer2D");
+		healthKit = (PackedScene)GD.Load("res://HealthKit.tscn");
 		var attackarea = (Area2D)GetNode("AttackArea");
 		var attackcollision = (CollisionShape2D)attackarea.GetChild(0);
 
@@ -54,7 +60,7 @@ public class Enemy : KinematicBody2D
 		var attackarea = (Area2D)GetNode("AttackArea");
 		var attackcollision = (CollisionShape2D)attackarea.GetChild(0);
 		
-		
+		if(GlobalVariables.Paused == false){
 		if(dead == false && isAttacking == false){
 			if (Velocity > Vector2.Zero) {
 			currentSprite.FlipH = false;
@@ -94,6 +100,7 @@ public class Enemy : KinematicBody2D
 			else{
 				Velocity = Vector2.Zero;
 			}
+		}
 			
 		}
   }
@@ -101,9 +108,16 @@ public class Enemy : KinematicBody2D
 	private void _on_Area2D_area_entered(Area2D area)
 	{
 		var currentSprite = (AnimatedSprite)GetNode("AnimatedSprite");
-		if(area.IsInGroup("Staff")){
+		if(area.IsInGroup("Staff") || area.IsInGroup("Rock")){
 			dead = true;
+			if(!GlobalVariables.Muted){
+				hitsound.Play();
+			}
 			currentSprite.Play("die");
+
+			if(area.IsInGroup("Rock")){
+				GetTree().CallGroup("Rock","dequeue");
+			}
 
 		}
 
@@ -119,6 +133,16 @@ public class Enemy : KinematicBody2D
 			attackcollision.Disabled = true;
 		}
 		if(currentSprite.Animation == "die"){
+			int dropchance = random.Next(1, 100);
+			GD.Print("Your lucky number : " + dropchance);
+			if(dropchance >= 80){
+				GD.Print("HEALTH KIT DROPPED!");
+				Node2D healthKit_instance = (Node2D)healthKit.Instance();
+				GetTree().GetRoot().AddChild(healthKit_instance);
+				healthKit_instance.GlobalPosition = this.GlobalPosition;
+			}
+			GetTree().CallGroup("Player","_interactiveZoom");
+			GetTree().CallGroup("Player","_rageCount");
 			GlobalVariables.PlayerScore += 100;
 			GetTree().CallGroup("Score","ChangeScore");
 			QueueFree();
@@ -143,11 +167,11 @@ public class Enemy : KinematicBody2D
 	
 	private void _on_DetectionRange_area_exited(Area2D area)
 	{
-				var currentSprite = (AnimatedSprite)GetNode("AnimatedSprite");
+			var currentSprite = (AnimatedSprite)GetNode("AnimatedSprite");
 			var playerhitbox = (CollisionShape2D)area.GetChild(0);
 
 		if(area.IsInGroup("Player")){
-
+			
 			GD.Print("EXITED");
 			
 			move = false;

@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://HUD.cs" type="Script" id=1]
 [ext_resource path="res://Score.cs" type="Script" id=2]
 [ext_resource path="res://Health.cs" type="Script" id=3]
 [ext_resource path="res://Wave.cs" type="Script" id=4]
+[ext_resource path="res://Rage.cs" type="Script" id=5]
 
 [node name="HUD" type="Node2D"]
 script = ExtResource( 1 )
@@ -28,8 +29,17 @@ script = ExtResource( 2 )
 
 [node name="Wave" type="Label" parent="Display" groups=["Wave"]]
 margin_left = 125.0
-margin_top = 25.0
+margin_top = 3.0
 margin_right = 230.0
-margin_bottom = 79.0
+margin_bottom = 57.0
 text = "WAVE 0"
 script = ExtResource( 4 )
+
+[node name="Rage" type="Label" parent="Display" groups=["Rage"]]
+visible = false
+margin_left = 82.0
+margin_top = 219.0
+margin_right = 234.0
+margin_bottom = 233.0
+text = "RAGE MODE AVAILABLE"
+script = ExtResource( 5 )
