@@ -1,6 +1,7 @@
 
 # The Masked One
 ***Gabriel Botelho***
+	-
 ***The Masked One*** est un Wave Based Action RPG où vous jouez un moine équipé de magie et de son baton pour survivre des vagues de ninja. 
 
 - Système de rondes
