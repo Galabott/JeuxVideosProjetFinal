@@ -36,6 +36,6 @@ Source Cours pour les Shaders  \
 - Magic
 	- 
 	 - La magie permet au joueur d'attaquer à distance en envoyant un rocher où la souris pointe. \
-	         Source https://www.youtube.com/watch?v=2G41KECXXn4 \![image](https://user-images.githubusercontent.com/94148198/204343681-8d516a87-a811-4003-9c74-21ad1c0fe23f.png)
+	         Source https://www.youtube.com/watch?v=2G41KECXXn4 \ ![image](https://user-images.githubusercontent.com/94148198/204343681-8d516a87-a811-4003-9c74-21ad1c0fe23f.png)
 
 		
